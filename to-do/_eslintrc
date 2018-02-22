@@ -1,0 +1,14 @@
+{
+    "extends": "airbnb",
+    "rules": {
+        "linebreak-style": 0,
+        "react/no-array-index-key": 0,
+        "react/forbid-prop-types": [2, { "forbid": ["any"] }],
+        "jsx-a11y/no-static-element-interactions": 0
+    },
+    "parser": "babel-eslint",
+    "globals": {
+        "window": true,
+        "document": true
+    }
+}
