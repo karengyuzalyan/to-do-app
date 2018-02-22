@@ -4,5 +4,12 @@ import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+
+ReactDOM.render(
+    <MuiThemeProvider muiTheme={getMuiTheme()}>
+        <App />
+    </MuiThemeProvider>,
+    document.getElementById('root'));
 registerServiceWorker();
