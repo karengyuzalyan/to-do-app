@@ -43,8 +43,7 @@ class ToDoApp extends Component {
         this.setState({
             newTask: '',
             tasks
-        }, this.saveInLocalStorage);
-
+        }, this.sortTasks);
     };
 
     setNewTask = (e: SyntheticEvent): void => {
@@ -71,13 +70,40 @@ class ToDoApp extends Component {
 
     openDeleteDialogOrNot = (index: number): void => {
         const tasks: Array<ITaskType> = this.getTasksArrayDeepClone();
-        this.setState({ selectedIndex: index });
 
         if (tasks[index].completed === true) {
-            this.setState({ isDeleteDialogOpen: true })
+            this.setState({
+                selectedIndex: index,
+                isDeleteDialogOpen: true
+            });
         } else {
-            this.deleteTask(index);
+            this.setState({ selectedIndex: index }, this.deleteTask);
         }
+    };
+
+    changeSortIcon = (): void => {
+        const { sortAToZ } = this.state;
+        const changeSort: boolean = this.getTasksArrayDeepClone().length > 0 ? !sortAToZ : sortAToZ;
+
+        this.setState({
+            // Here is permitted to change sort icon only when tasks array has at least one task.
+            sortAToZ: changeSort,
+        }, this.sortTasks)
+    };
+
+    sortTasks = (): void => {
+        let tasks: Array<ITaskType> = this.getTasksArrayDeepClone();
+        const { sortAToZ } = this.state;
+
+        if (sortAToZ) {
+            tasks = _.sortBy(tasks, 'text');
+        } else {
+            tasks = _.sortBy(tasks, 'text').reverse();
+        }
+
+        this.setState({
+            tasks,
+        }, this.saveInLocalStorage)
     };
 
     deleteTask = (): void => {
@@ -99,6 +125,7 @@ class ToDoApp extends Component {
     render() {
         const {
             tasks,
+            sortAToZ,
         } = this.state;
 
         return (
@@ -116,6 +143,17 @@ class ToDoApp extends Component {
                                 <div onClick={this.addNewTask}>
                                     <i
                                         className="fas fa-plus plus-icon"
+                                        style={{
+                                            color: 'rgb(25, 146, 177',
+                                        }}
+                                    />
+                                </div>
+                                <div
+                                    key={sortAToZ}
+                                    onClick={this.changeSortIcon}
+                                >
+                                    <i
+                                        className={`fas fa-sort-alpha-${sortAToZ ? 'up' : 'down'} sort-icon`}
                                         style={{
                                             color: 'rgb(25, 146, 177',
                                         }}
