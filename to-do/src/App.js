@@ -4,6 +4,7 @@ import React, {Component} from 'react';
 import _ from 'lodash';
 import TextField from 'material-ui/TextField';
 
+import DeleteDialog from './Dialog';
 import './App.css';
 
 type ITaskType = {
@@ -14,13 +15,17 @@ type ITaskType = {
 type IToDoAppState = {
     newTask: string,
     sortAToZ: boolean,
-    tasks: Array<ITaskType>
+    selectedIndex: number,
+    tasks: Array<ITaskType>,
+    isDeleteDialogOpen: boolean,
 };
 
 class ToDoApp extends Component {
     state: IToDoAppState  = {
         newTask: '',
         sortAToZ: true,
+        selectedIndex: null,
+        isDeleteDialogOpen: false,
         tasks: JSON.parse(localStorage.getItem("tasksInStorage")) || [],
     };
 
@@ -56,16 +61,28 @@ class ToDoApp extends Component {
         this.setState({ tasks }, this.saveInLocalStorage);
     };
 
-    deleteTask = (index: number): void => {
+    openDeleteDialogOrNot = (index: number): void => {
+        const tasks: Array<ITaskType> = this.getTasksArrayDeepClone();
+        this.setState({ selectedIndex: index });
+
+        if (tasks[index].completed === true) {
+            this.setState({ isDeleteDialogOpen: true })
+        } else {
+            this.deleteTask(index);
+        }
+    };
+
+    deleteTask = (): void => {
         const tasks: Array<ITaskType> = this.getTasksArrayDeepClone();
 
-        tasks.splice(index, 1);
-
+        tasks.splice(this.state.selectedIndex, 1);
         this.setState({ tasks }, this.saveInLocalStorage);
     };
 
     // Get deep clone of tasks from state to avoid of change reference
     getTasksArrayDeepClone = (): Array<ITaskType> => _.cloneDeep(this.state.tasks);
+
+    closeDialogFromParent = (): void => this.setState({ isDeleteDialogOpen: false });
 
     saveInLocalStorage = (): void => {
         localStorage.setItem('tasksInStorage', JSON.stringify(this.getTasksArrayDeepClone()));
@@ -117,7 +134,7 @@ class ToDoApp extends Component {
                                         value={task.text}
                                     />
                                     <div
-                                        onClick={() => this.deleteTask(index)}
+                                        onClick={() => this.openDeleteDialogOrNot(index)}
                                     >
                                         <i
                                             className="fa fa-trash garbage-icon"
@@ -131,6 +148,12 @@ class ToDoApp extends Component {
                         </div>
                     </div>
                 </div>
+                {this.state.isDeleteDialogOpen &&
+                    <DeleteDialog
+                        deleteTask={this.deleteTask}
+                        closeDialogFromParent={this.closeDialogFromParent}
+                    />
+                }
             </div>
         );
     }
