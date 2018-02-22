@@ -48,6 +48,22 @@ class ToDoApp extends Component {
         });
     };
 
+    markAsChecked = (index: number): void => {
+        const tasks: Array<ITaskType> = this.getTasksArrayDeepClone();
+
+        tasks[index].completed = !tasks[index].completed;
+
+        this.setState({ tasks }, this.saveInLocalStorage);
+    };
+
+    deleteTask = (index: number): void => {
+        const tasks: Array<ITaskType> = this.getTasksArrayDeepClone();
+
+        tasks.splice(index, 1);
+
+        this.setState({ tasks }, this.saveInLocalStorage);
+    };
+
     // Get deep clone of tasks from state to avoid of change reference
     getTasksArrayDeepClone = (): Array<ITaskType> => _.cloneDeep(this.state.tasks);
 
@@ -56,6 +72,10 @@ class ToDoApp extends Component {
     };
 
     render() {
+        const {
+            tasks,
+        } = this.state;
+
         return (
             <div>
                 <div className="app-wrapper">
@@ -77,6 +97,37 @@ class ToDoApp extends Component {
                                     />
                                 </div>
                             </div>
+                            {tasks.map((task, index) => (
+                                <div
+                                    key={index}
+                                    className="task-field display-flex"
+                                >
+                                    <div
+                                        key={task.completed}
+                                        onClick={() => this.markAsChecked(index)}
+                                    >
+                                        <i
+                                            className={`far fa-${task.completed ? 'check-square' : 'square'} completed-icon`}
+                                            style={{
+                                                color: task.completed ? 'green' : 'rgb(162, 165, 166)',
+                                            }}
+                                        />
+                                    </div>
+                                    <TextField
+                                        value={task.text}
+                                    />
+                                    <div
+                                        onClick={() => this.deleteTask(index)}
+                                    >
+                                        <i
+                                            className="fa fa-trash garbage-icon"
+                                            style={{
+                                                color: '#2a7d92',
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>

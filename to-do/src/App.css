@@ -37,6 +37,22 @@ body {
   background-color: #d5eae4;
 }
 
+.plus-icon, .completed-icon, .garbage-icon, .sort-icon {
+  width: 18px;
+  height: 40px;
+  margin: 6px 8px;
+}
+
+.plus-icon, .completed-icon, .garbage-icon, .sort-icon:hover {
+  cursor: pointer;
+  transition: .5s ease;
+}
+
+.task-field {
+  display: flex;
+  width: 200px;
+}
+
 .App-intro {
   font-size: large;
 }
