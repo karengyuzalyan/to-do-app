@@ -53,6 +53,14 @@ class ToDoApp extends Component {
         });
     };
 
+    handleTaskTextChange = (e: SyntheticEvent, index: number): void => {
+        const tasks: Array<ITaskType> = this.getTasksArrayDeepClone();
+
+        tasks[index].text = e.target.value;
+
+        this.setState({ tasks }, this.saveInLocalStorage);
+    };
+
     markAsChecked = (index: number): void => {
         const tasks: Array<ITaskType> = this.getTasksArrayDeepClone();
 
@@ -132,6 +140,7 @@ class ToDoApp extends Component {
                                     </div>
                                     <TextField
                                         value={task.text}
+                                        onChange={(e) => this.handleTaskTextChange(e, index)}
                                     />
                                     <div
                                         onClick={() => this.openDeleteDialogOrNot(index)}
