@@ -59,7 +59,7 @@ export default class DeleteDialog extends Component {
                     title="Delete the completed task"
                     onRequestClose={this.handleClose}
                 >
-                    Are you sure you want to permanently delete this completed item?
+                    Are you sure you want to permanently delete this completed task?
                 </Dialog>
             </div>
         );
